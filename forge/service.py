@@ -412,6 +412,7 @@ class Container(object):
         self.dockerfile = dockerfile
         self.context = context or os.path.dirname(self.dockerfile)
         self.args = args or {}
+        self.sources_relative = rebuild.get("sources_relative") if rebuild else None
         self.rebuild_root = rebuild.get("root", "/") if rebuild else None
         self.rebuild_sources = rebuild.get("sources", ()) if rebuild else ()
         self.rebuild_command = rebuild.get("command") if rebuild else None
@@ -448,7 +449,7 @@ class Container(object):
             builder = self.service.docker.builder(self.abs_context, self.abs_dockerfile, self.image, self.version, self.args, builder=self.builder)
             builder.run("mkdir", "-p", self.rebuild_root)
             for src in self.rebuild_sources:
-                abs_src = os.path.join(self.service.root, src)
+                abs_src = os.path.abspath( os.path.join(self.service.root, self.sources_relative, src) )
                 tgt_src = os.path.join(self.rebuild_root, src)
                 if os.path.isdir(abs_src):
                     builder.run("rm", "-rf", tgt_src)

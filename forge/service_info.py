@@ -28,6 +28,8 @@ REBUILD = Class(
           docs="The command that is executed inside the container in order to perform a build."),
     Field("sources", Sequence(String()), default=OMIT,
           docs="An array of files or directories that will be copied into the container prior to performing a build.")
+    Field("sources_relative", String(), default=OMIT,
+          docs="Relative to the path to service.yaml, the path to the sources on the host machine.")
 )
 
 CONTAINER = Class(
